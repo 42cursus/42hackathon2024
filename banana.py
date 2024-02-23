@@ -28,7 +28,7 @@ from langchain.embeddings import CacheBackedEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.storage import LocalFileStore
 
-store = LocalFileStore("./cachce/")
+store = LocalFileStore("./cache/")
 
 # create an embedder
 core_embeddings_model = OpenAIEmbeddings()
