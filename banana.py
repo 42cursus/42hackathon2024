@@ -9,11 +9,7 @@ from langchain.callbacks import StdOutCallbackHandler
 
 from langchain_community.document_loaders import WebBaseLoader
 
-yolo_nas_loader = WebBaseLoader("https://deci.ai/blog/yolo-nas-object-detection-foundation-model/").load()
-
-decicoder_loader = WebBaseLoader("https://deci.ai/blog/decicoder-efficient-and-accurate-code-generation-llm/#:~:text=DeciCoder's%20unmatched%20throughput%20and%20low,re%20obsessed%20with%20AI%20efficiency.").load()
-
-yolo_newsletter_loader = WebBaseLoader("https://deeplearningdaily.substack.com/p/unleashing-the-power-of-yolo-nas").load()
+cultural_dataset_loader = WebBaseLoader("https://zenodo.org/records/5225053/files/CrossCulturalData.csv").load()
 
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -24,11 +20,7 @@ text_splitter = RecursiveCharacterTextSplitter(
     length_function = len
 )
 
-yolo_nas_chunks = text_splitter.transform_documents(yolo_nas_loader)
-
-decicoder_chunks = text_splitter.transform_documents(decicoder_loader)
-
-yolo_newsletter_chunks = text_splitter.transform_documents(yolo_newsletter_loader)
+dataset_chunking = text_splitter.transform_documents(cultural_dataset_loader)
 
 
 from langchain_openai import OpenAIEmbeddings
@@ -48,11 +40,11 @@ embedder = CacheBackedEmbeddings.from_bytes_store(
 )
 
 # store embeddings in vector store
-vectorstore = FAISS.from_documents(yolo_nas_chunks, embedder)
+vectorstore = FAISS.from_documents(cultural_dataset_loader, embedder)
 
-vectorstore.add_documents(decicoder_chunks)
+vectorstore.add_documents(cultural_dataset_loader)
 
-vectorstore.add_documents(yolo_newsletter_chunks)
+vectorstore.add_documents(dataset_chunking)
 
 # instantiate a retriever
 retriever = vectorstore.as_retriever()
@@ -76,13 +68,15 @@ qa_with_sources_chain = RetrievalQA.from_chain_type(
 
 def main():
     print("Hello");
-    response = qa_with_sources_chain({"query":"What does Neural Architecture Search have to do with how Deci creates its models?"})
+    response = qa_with_sources_chain({
+        "query": "From an expert Cultural advisor what is the tradition in London ?"
+    })
     message = client.messages.create(
         max_tokens=1024,
         messages=[
             {
                 "role": "user",
-                "content": "What is going on in london  23 of Feb 2024?",
+                "content": "What are the content inside the document ? ",
             }
         ],
         model="claude-2.1",
