@@ -2,6 +2,8 @@ cache/
 obj/
 build/
 
+.env
+
 # From https://stackoverflow.com/questions/15606955/:
 # If you want to list all the files currently being tracked:
 # `git ls-tree --full-tree --name-only -r HEAD`

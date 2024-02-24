@@ -5,8 +5,10 @@ from fastapi import (
 )
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
+
 router = APIRouter()
-templates = Jinja2Templates(directory="../templates/")
+templates = Jinja2Templates(env=Environment(loader=FileSystemLoader('templates')))
 
 
 @router.post("/files/")
