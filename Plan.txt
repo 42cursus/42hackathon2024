@@ -1,0 +1,26 @@
+Personalized Learning Pathways
+    Use generative AI systems to create customized learning plans for students based on their individual learning styles, pace, and interests.
+    This tool should be able to adapt to student performance, providing tailored resources and activities to strengthen weak areas and expand on strengths, ultimately leading to a more efficient and engaging learning experience.
+AI-Driven Study Assistant
+    Create an AI-powered study assistant that can generate practice questions, summaries, and revision materials based on specific course content. This assistant should be able to understand and process educational material, generating quizzes and summaries in real-time to help students study more effectively and retain information better.
+    
+    
+Main ideas for the project:
+    Career choice assistant (with an educational element e.g. suggesting an approximate roadmap including top-resources for studying towards chosen career path)
+    Learning assistant based on type of information perception (text-based resources; video-based resources, project based resources; task-based resources)
+    Learning assistant for ADHD-people (task-breaker scheduler)
+        Zotero (zotero.org) - personal research assistant
+            POSIX Signals and Multithreaded Applications
+    Cultural difference education
+    Tool for teachers or peer-to-peer learners for creating miltiple choice quizees based on summarisation of the book chapters.
+        Constant new literature comes up really often so teacher doesn't have time to keep up with the new materials and creating quizees.
+        
+        
+    Execution:
+        Alina => work with the documentation (the pitch and the criterias)
+        David => frontend (Next.js) and hook it up with claude.ai
+        Andrei => pdf summarasation
+        Tina => quizzes
+        Mohammad Abir => websearch with youtube links
+
+        
