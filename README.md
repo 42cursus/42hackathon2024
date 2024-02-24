@@ -1,3 +1,34 @@
+## TEAM BANANA 
+
+![image](https://github.com/42cursus/42hackathon2024/assets/66947064/e55e5a32-42d5-4058-9dd6-34a554123ae0)
+
+Produced through @Microsoft Copilot by @uknowWho
+
+
+AI-Powered Teaching Assistant: Your Personal Educator
+
+Welcome to our AI-Powered Teaching Assistant, a revolutionary tool designed to transform the way you learn from PDF documents.
+What is AI-Powered Teaching Assistant?
+
+Our AI-Powered Teaching Assistant is a smart, interactive, and user-friendly tool that uses artificial intelligence to help you understand and learn from any PDF document. It's like having a personal educator right at your fingertips!
+How Does it Work?
+
+    Upload: Simply upload your PDF document.
+    Analyze: Our AI-Powered Teaching Assistant will analyze the content, breaking it down into manageable sections.
+    Learn: You can then interact with the content in a dynamic and engaging way, with features like text-to-speech, interactive quizzes, and summarized notes.
+
+Key Features
+
+    Smart Analysis: AI technology breaks down complex information into easy-to-understand sections.
+    Interactive Learning: Engage with the content through text-to-speech, quizzes, and summarized notes.
+    Accessible: User-friendly design makes learning accessible for all
+
+
+
+
+
+    
+
 pip3 install faiss-cpu langchain-openai BeautifulSoup4 langchain-community langchain anthropic
 
 [anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python)
