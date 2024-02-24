@@ -39,6 +39,78 @@
             padding-right: 20%;
         }
 
+        .container {
+            left: -35%;
+            transform: translateX(-100%);
+            top: 50%;
+            transform: translateY(-50%);
+            display: block;
+            position: absolute;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 120px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            height: 15px;
+            width: 15px;
+            background-color: #eee;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
         #chat-form button {
             position: absolute;
             left: 85%;
@@ -85,19 +157,21 @@
                 for (let i = 0; i < messages.length; i++) {
                     var content = "<p><strong>" + sender + " </strong> <span> " + messages[i] + "</span></p>";
                     parent.append(content);
-                    parent.animate({ scrollTop: parent.height()}, 1000);
+                    parent.animate({ scrollBottom: parent.height()}, 1000);
                 }
             };
             $("#chat-form").on("submit", function (e) {
                 e.preventDefault();
-                var message = $("input").val();
+                var msg = $("#message");
+                var message = msg.val();
                 if (message) {
+
                     data = {
                         "sender": current_user,
                         "message": message
                     };
                     socket.send(JSON.stringify(data));
-                    $("input").val("");
+                    msg.val("");
                     // document.cookie = 'X-Authorization=' + current_user + '; path=/;  SameSite=Lax';
                 }
             });
@@ -106,21 +180,28 @@
                 event.preventDefault();
                 var msg = $("#message");
                 var file_picker = $("#filename")[0];
+
+                console.log($("#flexQuiz"))
                 var file = file_picker.files.length ? file_picker.files[0] : null;
                 if (file)
+                    var flexQuiz = $("#flexQuiz");
                     var message = msg.val();
                     var reader = new FileReader();
                     var rawData = new ArrayBuffer();
                     reader.loadend = function() {
 
                     }
+
                     reader.onload = function(e) {
                         rawData = e.target.result;
                         data = {
                             "sender": current_user,
                             "message": message,
                             "filename": file.name,
+                            "quizTick": flexQuiz.is(':checked')
                         };
+
+                        console.log(data)
                         socket.send(JSON.stringify(data));
                         socket.send(rawData);
                         $("#filename").val(null);
@@ -141,6 +222,7 @@
         <div id="messages">
         </div>
         <form class="form-inline" id="chat-form">
+
             <input id="message" type="text" class="form-control"
                    placeholder="Write your message">
             <button id="send" type="submit" class="btn btn-primary">Send
@@ -155,7 +237,10 @@
            accept=".pdf,.doc,.docx,.rtf,.epub,.odt,.odp,.txt"    />
 <!--           accept=".pdf,.doc,.docx,.rtf,.epub,.odt,.odp,.pptx,.txt,.py,.ipynb,.js,.jsx,.html,.css,.java,.cs,.php,.c,.cpp,.cxx,.h,.hpp,.rs,.R,.Rmd,.swift,.go,.rb,.kt,.kts,.ts,.tsx,.m,.scala,.rs,.dart,.lua,.pl,.pm,.t,.sh,.bash,.zsh,.csv,.log,.ini,.config,.json,.yaml,.yml,.toml,.lua,.sql,.bat,.md,.coffee,.tex,.latex"-->
     <input id="upload_bn" class="btn btn-secondary" type="button" value="Upload"/>
-
+    <label class="container" for="flexQuiz">Quiz mode
+        <input type="checkbox" value="" id="flexQuiz" checked>
+        <span class="checkmark"></span>
+    </label>
 <!--    <form class="form-inline" action="http://localhost:8080/uploader/"-->
 <!--          method="POST"-->
 <!--          enctype="multipart/form-data">-->

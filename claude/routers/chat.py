@@ -86,12 +86,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 async def treat_upload(sender, data):
-    prompt, answer = await pdf_svc.do_request("", data['filename'])
+    prompt, answer = await pdf_svc.do_request("", data)
     response = {
         "sender": "claude.ai",
         "message": f"""\
-    Prompt: {prompt}
-    Response: {answer}"""
+    Prompt:
+    {prompt}
+    Response:
+    {answer}"""
     }
     return response
 
