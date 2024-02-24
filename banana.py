@@ -15,9 +15,9 @@ cultural_dataset_loader = WebBaseLoader("https://zenodo.org/records/5225053/file
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size = 500,
-    chunk_overlap = 50,
-    length_function = len
+    chunk_size=500,
+    chunk_overlap=50,
+    length_function=len
 )
 
 dataset_chunking = text_splitter.transform_documents(cultural_dataset_loader)
