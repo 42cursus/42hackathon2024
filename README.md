@@ -23,29 +23,34 @@ Key Features
     Interactive Learning: Engage with the content through text-to-speech, quizzes, and summarized notes.
     Accessible: User-friendly design makes learning accessible for all
 
-
-
-
-
-    
-
+### Some necessary tools
+```
 pip3 install faiss-cpu langchain-openai BeautifulSoup4 langchain-community langchain anthropic
+```
 
+### Useful links
 [anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python)
-[OpenAI Quickstart](https://platform.openai.com/docs/quickstart?context=python)
-[Computing Sentence Embeddings](https://www.sbert.net/examples/applications/computing-embeddings/README.html)
-[Retrieval Augmented Generation (RAG)](https://deci.ai/blog/retrieval-augmented-generation-using-langchain/)
-      
 
+[OpenAI Quickstart](https://platform.openai.com/docs/quickstart?context=python)
+
+[Computing Sentence Embeddings](https://www.sbert.net/examples/applications/computing-embeddings/README.html)
+
+[Retrieval Augmented Generation (RAG)](https://deci.ai/blog/retrieval-augmented-generation-using-langchain/)
+
+
+### Project structure
+```
 .
-├── app                    # "app" is a Python package
+├── claude                 # "claude" is a Python package
 │     ├── __init__.py      # this file makes "app" a "Python package"
 │     ├── main.py          # "main" module, e.g. import app.main
 │     ├── dependencies.py  # "dependencies" module, e.g. import app.dependencies
 │     └── routers          # "routers" is a "Python subpackage"
 │     │   ├── __init__.py  # makes "routers" a "Python subpackage"
 │     │   ├── items.py     # "items" submodule, e.g. import app.routers.items
+│     │   ├── chat.py      # "chat" submodule, e.g. import app.routers.chat
 │     │   └── users.py     # "users" submodule, e.g. import app.routers.users
-│     └── internal         # "internal" is a "Python subpackage"
-│         ├── __init__.py  # makes "internal" a "Python subpackage"
-│         └── admin.py     # "admin" submodule, e.g. import app.internal.admin
+│     └── claude_retriever # "claude_retriever" is a "Python subpackage"
+│         ├── __init__.py  # makes "claude_retriever" a "Python subpackage"
+│         └── client.py     # "admin" submodule, e.g. import app.internal.admin
+```

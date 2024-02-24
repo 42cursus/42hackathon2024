@@ -4,12 +4,20 @@ from fastapi.templating import Jinja2Templates
 from fastapi import (
     WebSocket, WebSocketDisconnect, APIRouter, Request
 )
+from fastapi.responses import RedirectResponse
+
+# redirect-to-login-page-if-user-not-logged-in-using-fastapi-login-package
+# https://stackoverflow.com/questions/73630653/
+from fastapi_login import LoginManager
+from fastapi_login.exceptions import InvalidCredentialsException
 
 
 if __name__ == 'routers.chat':
     from services import anthropic_svc
+    from services import pdf_svc
 else:
     from ..services import anthropic_svc
+    from ..services import pdf_svc
 
 
 router = APIRouter()
@@ -52,10 +60,22 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_json()
-            await socket_manager.send_personal_message(
-                data, websocket
-            )
-            resp = await treat_response(sender, data)
+            if 'filename' in data.keys():
+                filename = data['filename']
+                if filename is not None:
+                    file = await websocket.receive_bytes()
+                    with open(f'upload/{filename}', "wb") as f:
+                        f.write(file)
+                data['message'] = f"Uploaded: {filename}"
+                await socket_manager.send_personal_message(
+                    data, websocket
+                )
+                resp = await treat_upload(sender, data)
+            else:
+                await socket_manager.send_personal_message(
+                    data, websocket
+                )
+                resp = await treat_response(sender, data)
             await socket_manager.send_personal_message(
                 data=resp, websocket=websocket
             )
@@ -65,20 +85,37 @@ async def websocket_endpoint(websocket: WebSocket):
         await socket_manager.broadcast(response)
 
 
+async def treat_upload(sender, data):
+    prompt, answer = await pdf_svc.do_request("", data['filename'])
+    response = {
+        "sender": "claude.ai",
+        "message": f"""\
+    Prompt: {prompt}
+    Response: {answer}"""
+    }
+    return response
+
+
 async def treat_response(sender, prompt):
-    print(sender)
-    print(prompt)
     resp = await anthropic_svc.do_request(prompt)
     response = {
         "sender": "claude.ai",
-        "message": resp
+        "message": f"""\
+    Basic response: {resp['basic_response']}
+    Augmented response: {resp['augmented_response']}"""
     }
-    print(response)
     return response
 
 
 @router.get("/chat")
 def get_chat(request: Request):
-    return templates.TemplateResponse("chat.html", {
-        "request": request
-    })
+    sender = request.cookies.get("X-Authorization")
+    print(sender)
+    if (sender is None) or (sender == "undefined"):
+        return RedirectResponse(
+            url="/login",
+            status_code=307
+        )
+    else:
+        values = {"request": request}
+        return templates.TemplateResponse("chat.html", values)

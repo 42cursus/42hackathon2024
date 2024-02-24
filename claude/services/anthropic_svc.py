@@ -7,7 +7,6 @@ import asyncio
 asyncio.set_event_loop(asyncio.new_event_loop())
 import nest_asyncio
 nest_asyncio.apply()
-import json
 
 # Import and configure logging
 import logging
@@ -21,7 +20,7 @@ handler.setFormatter(
 )
 logger.addHandler(handler)
 
-ANTHROPIC_SEARCH_MODEL = "claude-2"
+anthropic_search_model = "claude-2"
 api_key = os.environ['ANTHROPIC_API_KEY']
 
 # Create a searcher
@@ -31,18 +30,25 @@ brave_search_tool = BraveSearchTool(
     anthropic_api_key=os.environ["ANTHROPIC_API_KEY"]
 )
 
+client = claude_retriever.ClientWithRetrieval(
+    api_key=api_key,
+    verbose=True,
+    search_tool=brave_search_tool
+)
+
+def get_completion(client, prompt, max_tokens=3000):
+    compl = client.completions.create(
+        prompt=prompt,
+        max_tokens_to_sample=max_tokens,
+        model=anthropic_search_model
+    )
+    return compl.completion
+
 
 async def do_request(query):
-    print("in anthropic_svc.do_request")
-    print(query)
     # Run a test query
-    query = "2023 World Cup"
-    # results = brave_search_tool.search(query=query, n_search_results_to_use=3)
-
-    client = claude_retriever.ClientWithRetrieval(
-        api_key=api_key,
-        search_tool=brave_search_tool
-    )
+    results = brave_search_tool.search(query=query, n_search_results_to_use=3)
+    print(results)
 
     # query = "Who scored the most goals in the 2023 Women's World Cup?"
     prompt = f'{anthropic.HUMAN_PROMPT} {query}{anthropic.AI_PROMPT}'
@@ -50,26 +56,26 @@ async def do_request(query):
     basic_response = client.completions.create(
         prompt=prompt,
         stop_sequences=[anthropic.HUMAN_PROMPT],
-        model=ANTHROPIC_SEARCH_MODEL,
+        model=anthropic_search_model,
         max_tokens_to_sample=1000,
     )
 
-    # print('-'*50)
-    # print('Basic response:')
-    # print(prompt + basic_response.completion)
-    # print('-'*50)
-    #
-    augmented_response = client.completion_with_retrieval(
+    aug_answer = client.completion_with_retrieval(
         query=query,
-        model=ANTHROPIC_SEARCH_MODEL,
+        model=anthropic_search_model,
         n_search_results_to_use=1,
         max_searches_to_try=3,
         max_tokens_to_sample=1000
     )
 
+    basic_resp = basic_response.completion.strip()
+    aug_resp = client.extract_between_tags('message',
+                                           aug_answer + '</message>',
+                                           strip=True)
+    print(basic_resp)
+    print(aug_resp)
     resp = {
-        "augmented_response":  augmented_response,
-        "basic_response": basic_response.completion
+        "basic_response": basic_resp,
+        "augmented_response": aug_resp
     }
-    json_str = json.dumps(resp, indent=4)
-    return json_str
+    return resp

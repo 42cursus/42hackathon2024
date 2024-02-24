@@ -10,17 +10,14 @@ Main ideas for the project:
     Learning assistant based on type of information perception (text-based resources; video-based resources, project based resources; task-based resources)
     Learning assistant for ADHD-people (task-breaker scheduler)
         Zotero (zotero.org) - personal research assistant
-            POSIX Signals and Multithreaded Applications
-    Cultural difference education
+            E.g.: POSIX Signals and Multithreaded Applications
+    Cultural difference in education
     Tool for teachers or peer-to-peer learners for creating miltiple choice quizees based on summarisation of the book chapters.
         Constant new literature comes up really often so teacher doesn't have time to keep up with the new materials and creating quizees.
         
-        
-    Execution:
-        Alina => work with the documentation (the pitch and the criterias)
-        David => frontend (Next.js) and hook it up with claude.ai
-        Andrei => pdf summarasation
-        Tina => quizzes
-        Mohammad Abir => websearch with youtube links
-
-        
+Execution:
+    Alina => work with the documentation (the pitch and the criterias)
+    David => frontend (Next.js) and hook it up with claude.ai
+    Andrei => pdf summarasation
+    Tina => quizzes
+    Mohammad Abir => websearch with youtube links

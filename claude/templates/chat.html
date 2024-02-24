@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>banana.education</title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
@@ -16,6 +17,7 @@
             left: 2.5%;
             top: 5%;
         }
+
         #chat-form {
             position: absolute;
             top: 90%;
@@ -23,6 +25,7 @@
             left: 50%;
             transform: translateX(-50%);
         }
+
         #messages {
             padding-bottom: 10%;
             padding-left: 20px;
@@ -30,56 +33,101 @@
             max-height: 80%;
             overflow: auto;
         }
+
         #chat-form input {
             width: 400px;
             padding-right: 20%;
         }
+
         #chat-form button {
             position: absolute;
             left: 85%;
         }
+
         #profile {
             position: absolute;
             top: 20px;
             left: 20px;
         }
+        #upload {
+            position: absolute;
+            top: 90%;
+            transform: translateY(-90%);
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             var current_user;
-            $.get("/api/current_user",function(response){
+            $.get("/api/current_user", function (response) {
                 current_user = response;
                 $("#profile").text(current_user);
             });
             var receiver = "";
             // create websocket
-            document.cookie = 'X-Authorization='+current_user+'; path=/;';
-            var socket = new WebSocket("ws://127.0.0.1:8080/api/chat");
-            socket.onopen = function(e) {
-
+            // document.cookie = 'X-Authorization=' + current_user + '; path=/; SameSite=Lax';
+            var socket = new WebSocket("ws://localhost:8080/api/chat");
+            socket.binaryType = "arraybuffer";
+            socket.onopen = function (e) {
+                // socket.send(document.cookie);
             };
-            socket.onmessage = function(event) {
+            socket.onmessage = function (event) {
                 var parent = $("#messages");
                 var data = JSON.parse(event.data);
                 var sender = data['sender'];
-                if (sender == current_user)
+                if (sender === current_user)
                     sender = "You";
-                var message = data['message']
-                var content = "<p><strong>"+sender+" </strong> <span> "+message+"</span></p>";
-                parent.append(content);
+
+                // var content = "<p><strong>" + sender + " </strong> <span> " + data['message'] + "</span></p>";
+                // parent.append(content);
+                var messages = data['message'].split(/\n\s*\n/);
+                for (let i = 0; i < messages.length; i++) {
+                    var content = "<p><strong>" + sender + " </strong> <span> " + messages[i] + "</span></p>";
+                    parent.append(content);
+                    parent.animate({ scrollTop: parent.height()}, 1000);
+                }
             };
-            $("#chat-form").on("submit", function(e){
+            $("#chat-form").on("submit", function (e) {
                 e.preventDefault();
                 var message = $("input").val();
-                if (message){
+                if (message) {
                     data = {
                         "sender": current_user,
                         "message": message
                     };
                     socket.send(JSON.stringify(data));
                     $("input").val("");
-                    document.cookie = 'X-Authorization=; path=/;';
+                    // document.cookie = 'X-Authorization=' + current_user + '; path=/;  SameSite=Lax';
                 }
+            });
+
+            $("#upload_bn").on("click", function (event) {
+                event.preventDefault();
+                var msg = $("#message");
+                var file_picker = $("#filename")[0];
+                var file = file_picker.files.length ? file_picker.files[0] : null;
+                if (file)
+                    var message = msg.val();
+                    var reader = new FileReader();
+                    var rawData = new ArrayBuffer();
+                    reader.loadend = function() {
+
+                    }
+                    reader.onload = function(e) {
+                        rawData = e.target.result;
+                        data = {
+                            "sender": current_user,
+                            "message": message,
+                            "filename": file.name,
+                        };
+                        socket.send(JSON.stringify(data));
+                        socket.send(rawData);
+                        $("#filename").val(null);
+                    }
+                    console.log(file);
+                    reader.readAsArrayBuffer(file);
+                    msg.val("");
             });
         });
     </script>
@@ -87,15 +135,34 @@
 <body>
 <div class="chat-body card">
     <div class="card-body">
-        <strong id="profile"></strong><h4 class="card-title text-center"> banana.education </h4>
+        <strong id="profile"></strong><h4 class="card-title text-center">
+        banana.education </h4>
         <hr>
         <div id="messages">
         </div>
         <form class="form-inline" id="chat-form">
-            <input type="text" class="form-control" placeholder="Write your message">
-            <button id="send" type="submit" class="btn btn-primary">Send</button>
+            <input id="message" type="text" class="form-control"
+                   placeholder="Write your message">
+            <button id="send" type="submit" class="btn btn-primary">Send
+            </button>
         </form>
     </div>
+</div>
+
+<div id="upload">
+
+    <input id="filename" class="btn btn-warning" type="file" name="file"
+           accept=".pdf,.doc,.docx,.rtf,.epub,.odt,.odp,.txt"    />
+<!--           accept=".pdf,.doc,.docx,.rtf,.epub,.odt,.odp,.pptx,.txt,.py,.ipynb,.js,.jsx,.html,.css,.java,.cs,.php,.c,.cpp,.cxx,.h,.hpp,.rs,.R,.Rmd,.swift,.go,.rb,.kt,.kts,.ts,.tsx,.m,.scala,.rs,.dart,.lua,.pl,.pm,.t,.sh,.bash,.zsh,.csv,.log,.ini,.config,.json,.yaml,.yml,.toml,.lua,.sql,.bat,.md,.coffee,.tex,.latex"-->
+    <input id="upload_bn" class="btn btn-secondary" type="button" value="Upload"/>
+
+<!--    <form class="form-inline" action="http://localhost:8080/uploader/"-->
+<!--          method="POST"-->
+<!--          enctype="multipart/form-data">-->
+<!--        <input type="file" name="file"/>-->
+<!--        <button id="send" type="submit" class="btn btn-secondary">Upload File-->
+<!--        </button>-->
+<!--    </form>-->
 </div>
 </body>
 </html>

@@ -1,6 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request, Response, Form
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse
+
 import dotenv
 import nest_asyncio
 nest_asyncio.apply()  # This is a workaround for asyncio + claude web retriever
@@ -40,9 +42,15 @@ app.include_router(files.router)
 templates = Jinja2Templates(directory="templates/")
 
 @app.get("/")
+@app.get("/login")
 def get_home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
+favicon_path = 'favicon.ico'
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 def main():
     import uvicorn
