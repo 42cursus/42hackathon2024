@@ -7,11 +7,8 @@ Produced through @Microsoft Copilot by @uknowWho
 
 AI-Powered Teaching Assistant: Your Personal Educator
 
-Welcome to our AI-Powered Teaching Assistant, a revolutionary tool designed to transform the way you learn from PDF documents.
-What is AI-Powered Teaching Assistant?
+Meet Banana Education, the AI-driven study assistant designed to capture the essence of educational content with PDF textbooks summarization, customizable assessments and fast review quizzes creation. Designed for teachers who seek efficient tools to create engaging assessments as well as for students across various academic levels who benefit from concise summaries of educational materials, interactive review activities, and personalized assessments tailored to their learning needs.
 
-Our AI-Powered Teaching Assistant is a smart, interactive, and user-friendly tool that uses artificial intelligence to help you understand and learn from any PDF document. It's like having a personal educator right at your fingertips!
-How Does it Work?
 
     Upload: Simply upload your PDF document.
     Analyze: Our AI-Powered Teaching Assistant will analyze the content, breaking it down into manageable sections.
